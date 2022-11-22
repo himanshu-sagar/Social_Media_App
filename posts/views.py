@@ -23,6 +23,17 @@ class PostView(views.APIView):
 
         return Response({"error": "No Post Found with this id for this user"}, status=status.HTTP_404_NOT_FOUND)
 
+    def get(self, request, pk):
+        post_query = Post.objects.get(id=pk)
+        post_data = PostSerializer(post_query).data
+        comments_query = Comment.objects.filter(post=pk)
+        comments_data = CommentSerializer(comments_query, many=True).data
+        num_of_likes = Reaction.objects.filter(post=pk).count()
+
+        data = {"post": post_data, "comments": comments_data, "num_of_likes": num_of_likes}
+
+        return Response(data=data, status=status.HTTP_200_OK)
+
 
 class LikeView(views.APIView):
     def post(self, request, pk):
@@ -59,3 +70,19 @@ class CommentView(views.APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class AllPostView(views.APIView):
+    def get(self, request):
+        user = request.user
+        posts_query = Post.objects.filter(user=user.id).order_by("created_at")
+        posts_data = PostSerializer(posts_query, many=True).data
+
+        for post in posts_data:
+            comments_query = Comment.objects.filter(post=post['id'])
+            comments_data = CommentSerializer(comments_query, many=True).data
+            num_of_likes = Reaction.objects.filter(post=post['id']).count()
+            post["comments"] = comments_data
+            post["num_of_likes"] = num_of_likes
+
+        return Response(data=posts_data, status=status.HTTP_200_OK)
