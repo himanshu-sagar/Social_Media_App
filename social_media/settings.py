@@ -44,7 +44,8 @@ INSTALLED_APPS = [
     'authentication',
     'rest_framework',
     'rest_framework_simplejwt',
-    'followers'
+    'followers',
+    'posts'
 ]
 
 MIDDLEWARE = [

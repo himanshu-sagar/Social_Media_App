@@ -23,4 +23,5 @@ urlpatterns = [
     path('api/token/refresh/', jwt_views.TokenRefreshView.as_view(), name='token_refresh'),
     path('', include('authentication.urls')),
     path('api/', include('followers.urls')),
+    path('api/', include('posts.urls')),
 ]

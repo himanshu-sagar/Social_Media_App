@@ -33,7 +33,7 @@ class UnfollowView(views.APIView):
             query.delete()
             return Response({"message": "Follower Removed Successfully"}, status=status.HTTP_200_OK)
 
-        return Response({"error": "Can not unfollow, Not following the user"}, status=status.HTTP_404_NOT_FOUND)
+        return Response({"error": "Can not unfollow, have Not followed the user"}, status=status.HTTP_404_NOT_FOUND)
 
 
 class UserConnectionDetailView(views.APIView):
