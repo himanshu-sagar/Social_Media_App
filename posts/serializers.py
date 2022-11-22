@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Post, Reaction
+from .models import Post, Reaction, Comment
 
 
 class PostSerializer(serializers.ModelSerializer):
@@ -11,4 +11,10 @@ class PostSerializer(serializers.ModelSerializer):
 class ReactionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Reaction
+        fields = "__all__"
+
+        
+class CommentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Comment
         fields = "__all__"

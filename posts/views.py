@@ -1,7 +1,7 @@
 from rest_framework import views, status
 from rest_framework.response import Response
-from .serializers import PostSerializer, ReactionSerializer
-from .models import Post, Reaction
+from .serializers import PostSerializer, ReactionSerializer, CommentSerializer
+from .models import Post, Reaction, Comment
 
 
 class PostView(views.APIView):
@@ -47,3 +47,15 @@ class UnlikeView(views.APIView):
             return Response({"message": "Post Unliked Successfully"}, status=status.HTTP_200_OK)
 
         return Response({"error": "Can not like, have not liked the user"}, status=status.HTTP_404_NOT_FOUND)
+
+
+class CommentView(views.APIView):
+    def post(self, request, pk):
+        user = request.user
+        request.data["comment_by"] = user.id
+        request.data["post"] = pk
+        serializer = CommentSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
